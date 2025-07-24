@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Health Track</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4F46E5',
+                        secondary: '#10B981'
+                    },
+                    borderRadius: {
+                        'none': '0px',
+                        'sm': '4px',
+                        DEFAULT: '8px',
+                        'md': '12px',
+                        'lg': '16px',
+                        'xl': '20px',
+                        '2xl': '24px',
+                        '3xl': '32px',
+                        'full': '9999px',
+                        'button': '8px'
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+    <style>
+        :where([class^="ri-"])::before { content: "\f3c2"; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #283c53;
+        }
+        input:focus {
+            outline: none;
+            border-color: #4F46E5;
+            transition: border-color 0.2s ease;
+        }
+        .form-container {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .toggle-password {
+            cursor: pointer;
+        }
+        input[type="checkbox"] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            outline: none;
+            cursor: pointer;
+            position: relative;
+        }
+        input[type="checkbox"]:checked {
+            background-color: #4F46E5;
+            border-color: #4F46E5;
+        }
+        input[type="checkbox"]:checked::after {
+            content: "";
+            position: absolute;
+            top: 3px;
+            left: 6px;
+            width: 5px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+        .flash-message {
+            animation: slideIn 0.3s ease-out, fadeOut 0.5s ease 3s forwards;
+        }
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes fadeOut {
+            to { opacity: 0; }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-center items-center p-4 md:p-6">
+    <div class="form-container w-full max-w-md mx-auto bg-white rounded-lg shadow-lg p-6 md:p-8">
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="mb-4 space-y-2">
+                    {% for category, message in messages %}
+                        <div class="flash-message px-4 py-2 rounded text-sm 
+                            {% if category == 'success' %}bg-green-100 text-green-800
+                            {% elif category == 'error' or category == 'danger' %}bg-red-100 text-red-800
+                            {% else %}bg-blue-100 text-blue-800{% endif %}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+       <div class="text-center mb-8">
+    <h1 class="font-['Pacifico'] text-3xl" style="color: #26465c;">SwasthyaSutra</h1>
+    <p class="text-gray-600">Create your account to start your health journey</p>
+</div>
+        
+        <form method="POST" action="{{ url_for('register') }}" class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none w-10 h-full">
+                        <i class="ri-user-line text-gray-400"></i>
+                    </div>
+                    <input type="text" name="first_name" class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-300 rounded text-gray-900 focus:ring-2 focus:ring-primary/20" placeholder="First name" required>
+                </div>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none w-10 h-full">
+                        <i class="ri-user-line text-gray-400"></i>
+                    </div>
+                    <input type="text" name="last_name" class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-300 rounded text-gray-900 focus:ring-2 focus:ring-primary/20" placeholder="Last name" required>
+                </div>
+            </div>
+            
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none w-10 h-full">
+                    <i class="ri-mail-line text-gray-400"></i>
+                </div>
+                <input type="email" name="email" class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-300 rounded text-gray-900 focus:ring-2 focus:ring-primary/20" placeholder="Email address" required>
+            </div>
+            
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none w-10 h-full">
+                    <i class="ri-calendar-line text-gray-400"></i>
+                </div>
+                <input type="date" name="date_of_birth" class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-300 rounded text-gray-900 focus:ring-2 focus:ring-primary/20" required>
+            </div>
+            
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none w-10 h-full">
+                    <i class="ri-lock-line text-gray-400"></i>
+                </div>
+                <input type="password" id="password" name="password" class="w-full pl-10 pr-10 py-3 bg-gray-50 border border-gray-300 rounded text-gray-900 focus:ring-2 focus:ring-primary/20" placeholder="Password" required minlength="8">
+                <div class="absolute inset-y-0 right-0 flex items-center pr-3 w-10 h-full">
+                    <i class="ri-eye-line text-gray-400 toggle-password" id="togglePassword"></i>
+                </div>
+            </div>
+            
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none w-10 h-full">
+                    <i class="ri-lock-line text-gray-400"></i>
+                </div>
+                <input type="password" id="confirmPassword" name="confirm_password" class="w-full pl-10 pr-10 py-3 bg-gray-50 border border-gray-300 rounded text-gray-900 focus:ring-2 focus:ring-primary/20" placeholder="Confirm password" required minlength="8">
+                <div class="absolute inset-y-0 right-0 flex items-center pr-3 w-10 h-full">
+                    <i class="ri-eye-line text-gray-400 toggle-password" id="toggleConfirmPassword"></i>
+                </div>
+            </div>
+            
+            <div class="flex items-start">
+                <div class="flex items-center h-5">
+                    <input type="checkbox" id="terms" name="terms" class="mr-2" required>
+                </div>
+                <label for="terms" class="text-sm text-gray-600">
+                    I agree to the <a href="#" class="text-primary hover:text-primary/80">Terms of Service</a> and <a href="#" class="text-primary hover:text-primary/80">Privacy Policy</a>
+                </label>
+            </div>
+       <button type="submit" class="w-full py-3 text-white font-medium rounded-button whitespace-nowrap" style="background-color: #48687d;">
+    Create Account
+</button>
+        </form>
+        
+        <div class="my-6 flex items-center">
+            <div class="flex-1 h-px bg-gray-200"></div>
+            <p class="mx-4 text-sm text-gray-500">Or continue with</p>
+            <div class="flex-1 h-px bg-gray-200"></div>
+        </div>
+        
+        <div class="grid grid-cols-3 gap-3">
+            <button type="button" class="flex items-center justify-center py-2.5 border border-gray-300 rounded-button hover:bg-gray-50 transition-colors whitespace-nowrap">
+                <div class="w-5 h-5 flex items-center justify-center mr-2">
+                    <i class="ri-google-fill text-[#EA4335]"></i>
+                </div>
+                <span class="text-sm font-medium text-gray-700">Google</span>
+            </button>
+            <button type="button" class="flex items-center justify-center py-2.5 border border-gray-300 rounded-button hover:bg-gray-50 transition-colors whitespace-nowrap">
+                <div class="w-5 h-5 flex items-center justify-center mr-2">
+                    <i class="ri-facebook-fill text-[#1877F2]"></i>
+                </div>
+                <span class="text-sm font-medium text-gray-700">Facebook</span>
+            </button>
+            <button type="button" class="flex items-center justify-center py-2.5 border border-gray-300 rounded-button hover:bg-gray-50 transition-colors whitespace-nowrap">
+                <div class="w-5 h-5 flex items-center justify-center mr-2">
+                    <i class="ri-apple-fill text-[#000000]"></i>
+                </div>
+                <span class="text-sm font-medium text-gray-700">Apple</span>
+            </button>
+        </div>
+        
+        <div class="mt-8 text-center">
+            <p class="text-gray-600">
+                Already have an account?
+                <a href="{{ url_for('login') }}" class="text-primary font-medium hover:text-primary/80">Sign in</a>
+            </p>
+        </div>
+    </div>
+    
+   
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const togglePassword = document.getElementById('togglePassword');
+            const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
+            const password = document.getElementById('password');
+            const confirmPassword = document.getElementById('confirmPassword');
+            
+            function togglePasswordVisibility(inputField, toggleIcon) {
+                const type = inputField.getAttribute('type') === 'password' ? 'text' : 'password';
+                inputField.setAttribute('type', type);
+                if (type === 'password') {
+                    toggleIcon.classList.remove('ri-eye-off-line');
+                    toggleIcon.classList.add('ri-eye-line');
+                } else {
+                    toggleIcon.classList.remove('ri-eye-line');
+                    toggleIcon.classList.add('ri-eye-off-line');
+                }
+            }
+            
+            togglePassword.addEventListener('click', () => togglePasswordVisibility(password, togglePassword));
+            toggleConfirmPassword.addEventListener('click', () => togglePasswordVisibility(confirmPassword, toggleConfirmPassword));
+            
+            // Client-side password validation
+            const form = document.querySelector('form');
+            form.addEventListener('submit', function(e) {
+                if (password.value !== confirmPassword.value) {
+                    e.preventDefault();
+                    alert('Passwords do not match!');
+                    confirmPassword.focus();
+                }
+                
+                if (password.value.length < 8) {
+                    e.preventDefault();
+                    alert('Password must be at least 8 characters long!');
+                    password.focus();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

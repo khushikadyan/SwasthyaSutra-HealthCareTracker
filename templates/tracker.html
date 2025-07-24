@@ -1,0 +1,1464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Tracker Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+    /* Base Styles */
+/* Enhanced Base Styles */
+:root {
+    /* Primary Colors */
+    --primary-color: #4361ee;       /* Vibrant blue */
+    --primary-light: #4895ef;      /* Lighter blue */
+    --primary-dark: #3a0ca3;       /* Darker blue */
+    
+    /* Secondary Colors */
+    --secondary-color: #3f37c9;    /* Purple-blue */
+    --accent-color: #f72585;       /* Energetic pink */
+    
+    /* Neutral Colors */
+    --light-color: #f8f9fa;        /* Very light gray */
+    --dark-color: #2b2d42;         /* Dark navy */
+    --medium-color: #8d99ae;       /* Medium gray */
+    
+    /* Status Colors */
+    --success-color: #4cc9f0;      /* Bright teal */
+    --warning-color: #f8961e;      /* Warm orange */
+    --danger-color: #ef233c;       /* Alert red */
+    --info-color: #560bad;         /* Deep purple */
+    
+    /* Background Colors */
+    --bg-dark: #1a2639;            /* Dark blue-gray */
+    --bg-light: #f8fafc;           /* Off-white */
+    --bg-card: #ffffff;            /* Pure white for cards */
+    
+    /* Text Colors */
+    --text-dark: #2b2d42;          /* Dark text */
+    --text-medium: #6c757d;        /* Medium text */
+    --text-light: #f8f9fa;         /* Light text */
+    
+    /* Other Variables */
+    --border-radius: 12px;
+    --box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+    --sidebar-width: 280px;
+    --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+body {
+     background-color: var(--bg-dark);
+    color: var(--text-light);
+    line-height: 1.6;
+}
+
+.container {
+    display: flex;
+    justify-content: space-around;
+    min-height: 100vh;
+    background-color: #283c53;
+}
+
+/* Enhanced Sidebar */
+.sidebar {
+    color: white;
+    width: var(--sidebar-width);
+     background: linear-gradient(135deg, #20242a 0%, #303132 100%);
+    box-shadow: var(--box-shadow);
+    padding: 25px 0;
+    display: flex;
+    flex-direction: column;
+    z-index: 10;
+    border-right: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    padding: 0 25px 25px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    letter-spacing: -0.5px;
+}
+
+.logo i {
+    margin-right: 12px;
+    font-size: 1.8rem;
+    color: var(--accent-color);
+}
+
+.nav-links {
+    flex: 1;
+    list-style: none;
+    padding: 0 15px;
+}
+
+.nav-links li {
+    margin: 6px 0;
+    color: white;
+}
+
+.nav-links a {
+    display: flex;
+    align-items: center;
+    padding: 12px 18px;
+    text-decoration: none;
+    color: white;
+    transition: var(--transition);
+    border-radius: var(--border-radius);
+    font-weight: 500;
+}
+
+.nav-links a:hover {
+    background: linear-gradient(90deg, rgba(67, 97, 238, 0.1) 0%, rgba(67, 97, 238, 0) 100%);
+    color: var(--primary-color);
+    transform: translateX(3px);
+}
+
+.nav-links a i {
+    margin-right: 12px;
+    width: 20px;
+    text-align: center;
+    font-size: 1.1rem;
+}
+
+.nav-links .active a {
+    background: linear-gradient(90deg, rgba(67, 97, 238, 0.1) 0%, rgba(67, 97, 238, 0) 100%);
+    color: var(--primary-color);
+    border-left: 4px solid var(--primary-color);
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    margin-top: auto;
+}
+
+.user-profile img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 12px;
+    object-fit: cover;
+    border: 2px solid var(--primary-light);
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.username {
+    font-weight: 600;
+    color: var(--dark-color);
+}
+
+.user-email {
+    font-size: 0.8rem;
+    color: var(--medium-color);
+}
+
+/* Enhanced Main Content */
+.main-content {
+    flex: 1;
+    padding: 30px;
+    margin-left: var(--sidebar-width);
+    background-color:#283c53;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.header h1 {
+     color: whitesmoke;
+    font-size: 2.2rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    position: relative;
+    left:-200px;
+    display: inline-block;
+    padding-left: 15px;
+}
+.header h1::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 70%;
+    width: 4px;
+    background: linear-gradient(to bottom, var(--primary-color), var(--accent-color));
+    border-radius: 2px;
+}
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+/* Enhanced Form Styles */
+.survey-form {
+  background: linear-gradient(135deg, #0f171f 50%, #111724 100%);
+    padding: 2.5rem;
+    width:1100px;
+    border-radius: 16px;
+    box-shadow: 
+        0 8px 32px rgba(67, 97, 238, 0.1),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    margin-bottom: 3rem;
+    position: relative;
+    left:-200px;
+    overflow: hidden;
+}
+.survey-form::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(67, 97, 238, 0.05) 0%, transparent 70%);
+    z-index: -1;
+}
+
+.survey-form h2 {
+    color: var(--dark-light);
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    position: relative;
+    display: inline-block;
+}
+.survey-form h2::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(to right, var(--primary-color), var(--accent-color));
+    border-radius: 2px;
+}
+
+.survey-form p {
+     color: var(--medium-color);
+    font-size: 1rem;
+    margin-bottom: 2rem;
+    font-weight: 500;
+ 
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  
+}
+
+.form-group {
+   margin-bottom: 1rem;
+    position: relative;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+    color: var(--dark-light);
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+#new-assessment {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+    color: white;
+    padding: 12px 25px;
+    border-radius: 30px;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+#new-assessment::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: 0.5s;
+}
+
+#new-assessment:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(67, 97, 238, 0.4);
+}
+#new-assessment:hover::before {
+    left: 100%;
+}
+
+#new-assessment i {
+    font-size: 1rem;
+    transition: transform 0.3s ease;
+}
+
+#new-assessment:hover i {
+    transform: scale(1.1);
+}
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+#new-assessment {
+    animation: float 4s ease-in-out infinite;
+}
+.form-group input[type="number"],
+.form-group input[type="text"],
+.form-group select {
+    width: 100%;
+    padding: 1rem 1.25rem;
+    border: 1px solid rgba(67, 97, 238, 0.2);
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 2px 8px rgba(67, 97, 238, 0.05);
+}
+
+.form-group input[type="number"]:focus,
+.form-group input[type="text"]:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 
+        0 0 0 3px rgba(67, 97, 238, 0.1),
+        0 4px 12px rgba(67, 97, 238, 0.15);
+    background-color: white;
+}
+
+/* Enhanced Range Input */
+input[type="range"] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 8px;
+  border-radius: 5px;
+  background: lightgray;
+  outline: none;
+  transition: background 0.3s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  background: white;
+  border: 2px solid #333;
+  border-radius: 50%;
+  cursor: pointer;
+  margin-top: -6px;
+}
+
+
+.range-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    color: var(--medium-dark);
+    margin-top: -0.5rem;
+}
+
+/* Enhanced Buttons */
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    left: -200px;
+}
+.form-actions {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    right: -180px;
+    margin-top: 1.5rem;
+}
+
+.btn i {
+    margin-right: 8px;
+}
+
+.btn-primary {
+     background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+    color: white;
+    padding: 1rem 2.5rem;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1.05rem;
+    box-shadow: 
+        0 4px 15px rgba(67, 97, 238, 0.3),
+        0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    border: none;
+    position: relative;
+    overflow: hidden;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+btn-primary::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.6s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 
+        0 6px 20px rgba(67, 97, 238, 0.4),
+        0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.btn-primary:hover::after {
+    transform: translateX(100%);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+/* Enhanced Dashboard Styles */
+.dashboard{
+    border-color: white;
+    display:flex;
+    position: relative;
+    left:-200px;
+    
+}
+.dashboard-header {
+    margin-bottom: 30px;
+    color: white;
+}
+
+.dashboard-header h2 {
+    color: var(--light-color);
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.dashboard-header p {
+    color: var(--medium-color);
+    font-size: 0.95rem;
+}
+
+/* Enhanced Score Card */
+.score-summary {
+    display: flex;
+    gap: 25px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.score-card {
+    background-color: white;
+    padding: 25px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    width: 300px;
+    text-align: center;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    transition: var(--transition);
+}
+
+.score-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1);
+}
+
+.score-card h3 {
+    margin-bottom: 20px;
+    color: var(--dark-color);
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.score-circle {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    margin: 0 auto 20px;
+}
+
+.circle-progress {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: conic-gradient(var(--primary-color) 0%, #e2e8f0 0%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 0 0 8px #f8fafc;
+}
+
+.circle-progress::before {
+    content: '';
+    position: absolute;
+    width: 80%;
+    height: 80%;
+    background-color: white;
+    border-radius: 50%;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.score-value {
+    position: relative;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--dark-color);
+}
+
+.score-status {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--medium-color);
+}
+
+/* Enhanced Metrics Grid */
+.metrics-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.metric-card {
+    background-color: white;
+    padding: 20px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    text-align: center;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    transition: var(--transition);
+}
+
+.metric-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.metric-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+    color: var(--primary-color);
+}
+
+.metric-header i {
+    margin-right: 10px;
+    font-size: 1.3rem;
+}
+
+.metric-header h4 {
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.metric-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+    color: var(--dark-color);
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.metric-category {
+    font-size: 0.9rem;
+    color: var(--medium-color);
+}
+
+/* Enhanced Recommendations */
+.recommendations {
+    background-color: white;
+    padding: 25px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    margin-bottom: 30px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.recommendations h3 {
+    margin-bottom: 20px;
+    color: var(--dark-color);
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.priority-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.tab-btn {
+    padding: 8px 18px;
+    background-color: #f1f5f9;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.tab-btn:hover {
+    background-color: #e2e8f0;
+}
+
+.tab-btn.active {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+    color: white;
+    box-shadow: 0 2px 6px rgba(67, 97, 238, 0.2);
+}
+
+.recommendations-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.recommendation-item {
+    padding: 18px;
+    border-left: 4px solid #e2e8f0;
+    border-radius: var(--border-radius);
+    background-color: #f8fafc;
+    display: flex;
+    align-items: flex-start;
+    transition: var(--transition);
+}
+
+.recommendation-item:hover {
+    transform: translateX(5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.recommendation-item.critical {
+    border-left-color: var(--danger-color);
+    background-color: rgba(239, 35, 60, 0.05);
+}
+
+.recommendation-item.high {
+    border-left-color: var(--warning-color);
+    background-color: rgba(248, 150, 30, 0.05);
+}
+
+.recommendation-item.medium {
+    border-left-color: var(--info-color);
+    background-color: rgba(86, 11, 173, 0.05);
+}
+
+.recommendation-item i {
+    margin-right: 15px;
+    font-size: 1.3rem;
+    margin-top: 3px;
+    flex-shrink: 0;
+}
+
+.recommendation-item.critical i {
+    color: var(--danger-color);
+}
+
+.recommendation-item.high i {
+    color: var(--warning-color);
+}
+
+.recommendation-item.medium i {
+    color: var(--info-color);
+}
+
+.recommendation-content h4 {
+    margin-bottom: 8px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--dark-color);
+}
+
+.recommendation-content p {
+    color: var(--medium-color);
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+/* Enhanced Trends Section */
+.trends {
+    background-color: white;
+    padding: 25px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.trends h3 {
+    margin-bottom: 20px;
+    color: var(--dark-color);
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.trends-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.trend-card {
+    background-color: white;
+    border-radius: var(--border-radius);
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    transition: var(--transition);
+}
+
+.trend-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.trend-card h4 {
+    color: var(--dark-color);
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.trend-card h4 i {
+    margin-right: 12px;
+    font-size: 1.1rem;
+    color: var(--primary-color);
+}
+
+.chart-container {
+    width: 100%;
+    height: 200px;
+    margin-bottom: 15px;
+}
+
+.trend-stats {
+    display: flex;
+    justify-content: space-around;
+    border-top: 1px solid #f1f5f9;
+    padding-top: 15px;
+}
+
+.stat {
+    text-align: center;
+}
+
+.stat-label {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--medium-color);
+    margin-bottom: 5px;
+}
+
+.stat-value {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--dark-color);
+}
+
+/* Responsive Styles */
+@media (max-width: 992px) {
+    .container {
+        flex-direction: column;
+    }
+    
+    .sidebar {
+        width: 100%;
+        flex-direction: row;
+        padding: 15px;
+    }
+    
+    .logo {
+        padding: 10px;
+        font-size: 1.2rem;
+    }
+    
+    .nav-links {
+        display: flex;
+        flex: 1;
+        justify-content: space-around;
+    }
+    
+    .nav-links li {
+        margin: 0;
+    }
+    
+    .nav-links a {
+        padding: 10px;
+        flex-direction: column;
+        font-size: 0.8rem;
+    }
+    
+    .nav-links a i {
+        margin-right: 0;
+        margin-bottom: 5px;
+    }
+    
+    .nav-links .active a {
+        border-left: none;
+        border-bottom: 3px solid var(--primary-color);
+    }
+    
+    .user-profile {
+        display: none;
+    }
+    
+    .main-content {
+        
+        margin-left: 0;
+        padding: 20px;
+    }
+    
+    .score-summary {
+        flex-direction: column;
+    }
+    
+    .score-card {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .metrics-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .trends-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(67, 97, 238, 0.2);
+    position: relative;
+
+    }
+}
+</style>
+<body>
+    <div class="container">
+        <!-- Navigation Sidebar -->
+        <nav class="sidebar">
+            <div class="logo">
+                <i class="fas fa-heartbeat"></i>
+                <span>Dashboard</span>
+            </div>
+            <ul class="nav-links">
+                <li class="active"><a href="#"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="#"><i class="fas fa-chart-line"></i> Analytics</a></li>
+                <li><a href="#"><i class="fas fa-history"></i> History</a></li>
+                <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+                <li><a href="#"><i class="fas fa-question-circle"></i> Help</a></li>
+            </ul>
+           
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="header">
+                <h1>SwasthyaSutra</h1>
+                <div class="header-actions">
+                    <button class="btn btn-primary" id="new-assessment">
+                        <i class="fas fa-plus"></i> New Assessment
+                    </button>
+                </div>
+            </header>
+
+            <!-- Survey Form (Initially visible) -->
+            <section class="survey-form" id="survey-form">
+                <h2>Health Survey</h2>
+                <p>Please provide information about your health habits</p>
+                
+                <form id="health-survey">
+                    <div class="form-grid">
+                        <!-- Personal Information -->
+                        <div class="form-group">
+                            <label for="age">Age</label>
+                            <input type="number" id="age" name="age" min="1" max="120" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="gender">Gender</label>
+                            <select id="gender" name="gender" required>
+                                <option value="">Select</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="weight">Weight (kg)</label>
+                            <input type="number" id="weight" name="weight_kg" min="20" max="300" step="0.1" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="height">Height (cm)</label>
+                            <input type="number" id="height" name="height_cm" min="100" max="250" required>
+                        </div>
+                        
+                        <!-- Health Habits -->
+                        <div class="form-group">
+                            <label for="sleep">Sleep Hours (per night)</label>
+                            <input type="number" id="sleep" name="sleep_hours" min="0" max="24" step="0.5" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="water">Water Intake (glasses per day)</label>
+                            <input type="number" id="water" name="water_glasses" min="0" max="20" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="diet">Diet Quality (1-10)</label>
+                            <input type="range" id="diet" name="diet_quality" min="1" max="10" value="5">
+                            <div class="range-labels">
+                                <span>1 (Poor)</span>
+                                <span>10 (Excellent)</span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="exercise">Exercise Days (per week)</label>
+                            <input type="number" id="exercise" name="exercise_days" min="0" max="7" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="stress">Stress Level (1-10)</label>
+                            <input type="range" id="stress" name="stress_level" min="1" max="10" value="5">
+                            <div class="range-labels">
+                                <span>1 (Low)</span>
+                                <span>10 (High)</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions ">
+                        <button type="submit" class="btn btn-primary">Get Health Report</button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Results Dashboard (Initially hidden) -->
+            <section class="dashboard" id="dashboard" style="display: none;">
+                <div class="dashboard-header">
+                    <h2>Your Health Dashboard</h2>
+                    <p>Last updated: <span id="last-updated">Just now</span></p>
+                </div>
+                
+                <!-- Health Score Summary -->
+                <div class="score-summary">
+                    <div class="score-card">
+                        <h3>Overall Health Score</h3>
+                        <div class="score-circle" id="health-score">
+                            <div class="circle-progress" data-value="0">
+                                <span class="score-value">0</span>
+                            </div>
+                        </div>
+                        <div class="score-status" id="health-status">Loading...</div>
+                    </div>
+                    
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-header">
+                                <i class="fas fa-weight"></i>
+                                <h4>BMI</h4>
+                            </div>
+                            <div class="metric-value" id="bmi-value">-</div>
+                            <div class="metric-category" id="bmi-category">-</div>
+                        </div>
+                        
+                        <div class="metric-card">
+                            <div class="metric-header">
+                                <i class="fas fa-bed"></i>
+                                <h4>Sleep</h4>
+                            </div>
+                            <div class="metric-value" id="sleep-value">-</div>
+                            <div class="metric-category">hours/night</div>
+                        </div>
+                        
+                        <div class="metric-card">
+                            <div class="metric-header">
+                                <i class="fas fa-fire"></i>
+                                <h4>Activity</h4>
+                            </div>
+                            <div class="metric-value" id="activity-value">-</div>
+                            <div class="metric-category">days/week</div>
+                        </div>
+                        
+                        <div class="metric-card">
+                            <div class="metric-header">
+                                <i class="fas fa-tint"></i>
+                                <h4>Hydration</h4>
+                            </div>
+                            <div class="metric-value" id="water-value">-</div>
+                            <div class="metric-category">glasses/day</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recommendations -->
+                <div class="recommendations">
+                    <h3>Personalized Recommendations</h3>
+                    <div class="priority-tabs">
+                        <button class="tab-btn active" data-priority="all">All</button>
+                        <button class="tab-btn" data-priority="critical">Critical</button>
+                        <button class="tab-btn" data-priority="high">High</button>
+                        <button class="tab-btn" data-priority="medium">Medium</button>
+                    </div>
+                    
+                    <div class="recommendations-list" id="recommendations-list">
+                        <!-- Recommendations will be inserted here by JavaScript -->
+                    </div>
+                </div>
+                
+                <!-- Health Trends (Placeholder) -->
+                <!-- Replace the existing trends section with this simplified version -->
+<div class="trends">
+    <h3>Health Trends</h3>
+    
+    <div class="trends-grid">
+        <!-- Health Score Trend -->
+        <div class="trend-card">
+            <h4><i class="fas fa-heartbeat"></i> Health Score</h4>
+            <div class="chart-container">
+                <canvas id="healthScoreChart"></canvas>
+            </div>
+            <div class="trend-stats">
+                <div class="stat">
+                    <span class="stat-label">Current</span>
+                    <span class="stat-value" id="current-score">-</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">30-Day Avg</span>
+                    <span class="stat-value" id="avg-score">-</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sleep Trend -->
+        <div class="trend-card">
+            <h4><i class="fas fa-bed"></i> Sleep Hours</h4>
+            <div class="chart-container">
+                <canvas id="sleepTrendChart"></canvas>
+            </div>
+            <div class="trend-stats">
+                <div class="stat">
+                    <span class="stat-label">Last Night</span>
+                    <span class="stat-value" id="last-sleep">-</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Weekly Avg</span>
+                    <span class="stat-value" id="avg-sleep">-</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Activity Trend -->
+        <div class="trend-card">
+            <h4><i class="fas fa-running"></i> Activity</h4>
+            <div class="chart-container">
+                <canvas id="activityTrendChart"></canvas>
+            </div>
+            <div class="trend-stats">
+                <div class="stat">
+                    <span class="stat-label">This Week</span>
+                    <span class="stat-value" id="week-activity">-</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Goal</span>
+                    <span class="stat-value" id="activity-goal">5/7 days</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+            </section>
+        </main>
+    </div>
+<script>
+    document.querySelectorAll('input[type="range"]').forEach(range => {
+    range.addEventListener('input', function() {
+        const value = (this.value - this.min) / (this.max - this.min) * 100;
+        this.style.setProperty('--range-fill', `${value}%`);
+    });
+    // Initialize on load
+    const value = (range.value - range.min) / (range.max - range.min) * 100;
+    range.style.setProperty('--range-fill', `${value}%`);
+});
+   // Form submission handler
+document.getElementById('health-survey').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    // Show loading state
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+    
+    try {
+        // Get form data
+        const formData = {
+            age: parseFloat(document.getElementById('age').value),
+            gender: document.getElementById('gender').value,
+            weight_kg: parseFloat(document.getElementById('weight').value),
+            height_cm: parseFloat(document.getElementById('height').value),
+            sleep_hours: parseFloat(document.getElementById('sleep').value),
+            water_glasses: parseFloat(document.getElementById('water').value),
+            diet_quality: parseFloat(document.getElementById('diet').value),
+            exercise_days: parseFloat(document.getElementById('exercise').value),
+            stress_level: parseFloat(document.getElementById('stress').value)
+        };
+        
+        // Call API endpoint
+        const response = await fetch('/api/predict', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(formData),
+            credentials: 'same-origin'
+        });
+        
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Failed to get assessment');
+        }
+        
+        const result = await response.json();
+        
+        // Show dashboard and hide survey
+        document.getElementById('survey-form').style.display = 'none';
+        document.getElementById('dashboard').style.display = 'block';
+        
+        // Update dashboard with results
+        updateDashboard(result.result);
+        
+    } catch (error) {
+        alert('Error: ' + error.message);
+        console.error('Assessment error:', error);
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Get Health Report';
+    }
+});
+
+// Update dashboard with results
+function updateDashboard(data) {
+    // Update score visualization
+    const scoreValue = Math.round(data.score);
+    document.querySelector('.score-value').textContent = scoreValue;
+    document.querySelector('.circle-progress').style.background = 
+        `conic-gradient(var(--primary-color) ${scoreValue}%, #eee ${scoreValue}%)`;
+    document.getElementById('health-status').textContent = data.status;
+    
+    // Update metrics
+    document.getElementById('bmi-value').textContent = data.metrics.bmi.toFixed(1);
+    document.getElementById('bmi-category').textContent = data.metrics.bmi_category;
+    document.getElementById('sleep-value').textContent = data.metrics.sleep_hours;
+    document.getElementById('activity-value').textContent = data.metrics.exercise_days;
+    document.getElementById('water-value').textContent = data.metrics.water_glasses;
+    
+    // Update recommendations
+    updateRecommendations(data.recommendations);
+    
+    // Update timestamp
+    document.getElementById('last-updated').textContent = data.timestamp;
+}
+
+// Render recommendations
+function updateRecommendations(recommendations) {
+    const container = document.getElementById('recommendations-list');
+    container.innerHTML = '';
+    
+    recommendations.forEach(rec => {
+        const item = document.createElement('div');
+        item.className = `recommendation-item ${rec.priority}`;
+        
+        // Set appropriate icon based on category
+        const iconMap = {
+            'sleep': 'fa-bed',
+            'exercise': 'fa-running',
+            'diet': 'fa-utensils',
+            'hydration': 'fa-tint',
+            'stress': 'fa-brain',
+            'weight': 'fa-weight'
+        };
+        
+        const defaultIcon = 'fa-info-circle';
+        const iconClass = iconMap[rec.category.toLowerCase()] || defaultIcon;
+        
+        item.innerHTML = `
+            <i class="fas ${iconClass}"></i>
+            <div class="recommendation-content">
+                <h4>${rec.category}</h4>
+                <p>${rec.message}</p>
+            </div>
+        `;
+        
+        container.appendChild(item);
+    });
+}
+
+
+
+
+
+// Initialize all charts when dashboard is shown
+function initSimpleCharts() {
+    // Sample data - in a real app, you would get this from your backend
+    const healthData = generateSampleData();
+    
+    // Create charts
+    createHealthScoreChart(healthData);
+    createSleepTrendChart(healthData);
+    createActivityTrendChart(healthData);
+    
+    // Update stats
+    updateSimpleStats(healthData);
+}
+
+function generateSampleData() {
+    // Generate 30 days of sample data
+    const data = [];
+    const today = new Date();
+    
+    for (let i = 29; i >= 0; i--) {
+        const date = new Date(today);
+        date.setDate(date.getDate() - i);
+        
+        data.push({
+            date: date,
+            score: 70 + Math.sin(i/3) * 15 + (Math.random() * 5 - 2.5),
+            sleep: 6.5 + Math.sin(i/4) * 1.5 + (Math.random() * 0.5 - 0.25),
+            activity: 3 + Math.sin(i/5) * 2 + (Math.random() * 0.5 - 0.25)
+        });
+    }
+    
+    return data;
+}
+
+function createHealthScoreChart(data) {
+    const ctx = document.getElementById('healthScoreChart').getContext('2d');
+    const labels = data.map(d => d.date.getDate() + '/' + (d.date.getMonth()+1));
+    const scores = data.map(d => Math.min(100, Math.max(30, Math.round(d.score))));
+    
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Health Score',
+                data: scores,
+                borderColor: 'rgba(74, 111, 165, 1)',
+                backgroundColor: 'rgba(74, 111, 165, 0.1)',
+                borderWidth: 2,
+                tension: 0.3,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    min: 30,
+                    max: 100
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+}
+
+function createSleepTrendChart(data) {
+    const ctx = document.getElementById('sleepTrendChart').getContext('2d');
+    const labels = data.map(d => d.date.getDate() + '/' + (d.date.getMonth()+1));
+    const sleepHours = data.map(d => d.sleep);
+    
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Sleep Hours',
+                data: sleepHours,
+                backgroundColor: 'rgba(23, 162, 184, 0.5)',
+                borderColor: 'rgba(23, 162, 184, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 10
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+}
+
+function createActivityTrendChart(data) {
+    const ctx = document.getElementById('activityTrendChart').getContext('2d');
+    
+    // Group by week
+    const weeklyActivity = [];
+    for (let i = 0; i < data.length; i += 7) {
+        const weekData = data.slice(i, i + 7);
+        const avg = weekData.reduce((sum, d) => sum + d.activity, 0) / weekData.length;
+        weeklyActivity.push(avg);
+    }
+    
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: weeklyActivity.map((_, i) => `Week ${i + 1}`),
+            datasets: [{
+                label: 'Activity Days',
+                data: weeklyActivity,
+                borderColor: 'rgba(255, 193, 7, 1)',
+                backgroundColor: 'rgba(255, 193, 7, 0.1)',
+                borderWidth: 2,
+                tension: 0.3,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 7
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+}
+
+function updateSimpleStats(data) {
+    // Current health score
+    const currentScore = Math.round(data[data.length - 1].score);
+    document.getElementById('current-score').textContent = currentScore;
+    
+    // 30-day average score
+    const avgScore = Math.round(data.reduce((sum, d) => sum + d.score, 0) / data.length);
+    document.getElementById('avg-score').textContent = avgScore;
+    
+    // Sleep stats
+    document.getElementById('last-sleep').textContent = data[data.length - 1].sleep.toFixed(1) + 'h';
+    
+    // Weekly average sleep
+    const lastWeekSleep = data.slice(-7).reduce((sum, d) => sum + d.sleep, 0) / 7;
+    document.getElementById('avg-sleep').textContent = lastWeekSleep.toFixed(1) + 'h';
+    
+    // Weekly activity
+    const weekActivity = data.slice(-7).filter(d => d.activity >= 3).length;
+    document.getElementById('week-activity').textContent = weekActivity + '/7 days';
+}
+
+// Initialize charts when dashboard is shown
+document.getElementById('health-survey').addEventListener('submit', function() {
+    setTimeout(initSimpleCharts, 500);
+});
+ document.querySelectorAll('input[type="range"]').forEach(range => {
+    let lastValue = range.value;
+
+    const updateSlider = () => {
+      const min = +range.min;
+      const max = +range.max;
+      const val = +range.value;
+      const percent = ((val - min) / (max - min)) * 100;
+
+      const color = val > lastValue ? 'green' : (val < lastValue ? 'red' : 'gray');
+      range.style.background = `linear-gradient(to right, ${color} ${percent}%, lightgray ${percent}%)`;
+
+      lastValue = val;
+    };
+
+    range.addEventListener('input', updateSlider);
+    updateSlider(); // Set initial background
+  });
+
+
+  
+    </script>
+ 
+</body>
+</html>

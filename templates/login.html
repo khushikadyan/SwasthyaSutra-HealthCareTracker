@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Health Track</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>tailwind.config={theme:{extend:{colors:{primary:'#4F46E5',secondary:'#10B981'},borderRadius:{'none':'0px','sm':'4px',DEFAULT:'8px','md':'12px','lg':'16px','xl':'20px','2xl':'24px','3xl':'32px','full':'9999px','button':'8px'}}}}</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+    <style>
+        :where([class^="ri-"])::before { content: "\f3c2"; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #283c53;
+        }
+        input:focus {
+            outline: none;
+            border-color: #4F46E5;
+            transition: border-color 0.2s ease;
+        }
+        .form-container {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .toggle-password {
+            cursor: pointer;
+        }
+        input[type="checkbox"] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            outline: none;
+            cursor: pointer;
+            position: relative;
+        }
+        input[type="checkbox"]:checked {
+            background-color: #4F46E5;
+            border-color: #4F46E5;
+        }
+        input[type="checkbox"]:checked::after {
+            content: "";
+            position: absolute;
+            top: 3px;
+            left: 6px;
+            width: 5px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-center items-center p-4 md:p-6">
+    <div class="form-container w-full max-w-md mx-auto bg-white rounded-lg shadow-lg p-6 md:p-8">
+        <div class="text-center mb-8">
+            <h1 class="font-['Pacifico'] text-3xl  mb-2"style="color: #26465c;">SwasthyaSutra</h1>
+            <p class="text-gray-600">Welcome back to your health journey</p>
+        </div>
+        
+        <form  method="POST" action="{{ url_for('login') }}" class="space-y-6">
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none w-10 h-full">
+                    <i class="ri-mail-line text-gray-400"></i>
+                </div>
+                <input type="email" name="email" class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-300 rounded text-gray-900 focus:ring-2 focus:ring-primary/20" placeholder="Email address" required>
+            </div>
+            
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none w-10 h-full">
+                    <i class="ri-lock-line text-gray-400"></i>
+                </div>
+                <input type="password" name="password" id="password" class="w-full pl-10 pr-10 py-3 bg-gray-50 border border-gray-300 rounded text-gray-900 focus:ring-2 focus:ring-primary/20" placeholder="Password" required>
+                <div class="absolute inset-y-0 right-0 flex items-center pr-3 w-10 h-full">
+                    <i class="ri-eye-line text-gray-400 toggle-password" id="togglePassword"></i>
+                </div>
+            </div>
+            
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <input type="checkbox" id="remember" class="mr-2">
+                    <label for="remember" class="text-sm text-gray-600">Remember me</label>
+                </div>
+                <a href="#" class="text-sm text-primary hover:text-primary/80 font-medium">Forgot password?</a>
+            </div>
+            
+           <button type="submit" class="w-full py-3 text-white font-medium rounded-button hover:bg-primary/90 transition-colors whitespace-nowrap" style="background-color: #48687d;">
+    Log in
+</button>
+        </form>
+        
+        <div class="my-6 flex items-center">
+            <div class="flex-1 h-px bg-gray-200"></div>
+            <p class="mx-4 text-sm text-gray-500">Or continue with</p>
+            <div class="flex-1 h-px bg-gray-200"></div>
+        </div>
+        
+        <div class="grid grid-cols-3 gap-3">
+            <button class="flex items-center justify-center py-2.5 border border-gray-300 rounded-button hover:bg-gray-50 transition-colors whitespace-nowrap">
+                <div class="w-5 h-5 flex items-center justify-center mr-2">
+                    <i class="ri-google-fill text-[#EA4335]"></i>
+                </div>
+                <span class="text-sm font-medium text-gray-700">Google</span>
+            </button>
+            <button class="flex items-center justify-center py-2.5 border border-gray-300 rounded-button hover:bg-gray-50 transition-colors whitespace-nowrap">
+                <div class="w-5 h-5 flex items-center justify-center mr-2">
+                    <i class="ri-facebook-fill text-[#1877F2]"></i>
+                </div>
+                <span class="text-sm font-medium text-gray-700">Facebook</span>
+            </button>
+            <button class="flex items-center justify-center py-2.5 border border-gray-300 rounded-button hover:bg-gray-50 transition-colors whitespace-nowrap">
+                <div class="w-5 h-5 flex items-center justify-center mr-2">
+                    <i class="ri-apple-fill text-[#000000]"></i>
+                </div>
+                <span class="text-sm font-medium text-gray-700">Apple</span>
+            </button>
+        </div>
+        
+        <div class="mt-8 text-center">
+            <p class="text-gray-600">
+                Don't have an account? 
+                <a href="{{ url_for('register') }}" class="text-primary font-medium hover:text-primary/80">Sign up</a>
+            </p>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const togglePassword = document.getElementById('togglePassword');
+            const password = document.getElementById('password');
+            
+            togglePassword.addEventListener('click', function() {
+                const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+                password.setAttribute('type', type);
+                
+                if (type === 'password') {
+                    togglePassword.classList.remove('ri-eye-off-line');
+                    togglePassword.classList.add('ri-eye-line');
+                } else {
+                    togglePassword.classList.remove('ri-eye-line');
+                    togglePassword.classList.add('ri-eye-off-line');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
